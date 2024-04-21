@@ -1,0 +1,3 @@
+QStackedWidget {
+    font: 20px 'Segoe UI';
+}

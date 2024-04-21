@@ -1,0 +1,27 @@
+SettingInterface,
+#view {
+    background-color: transparent;
+}
+
+QScrollArea {
+    border: none;
+    background-color: transparent;
+}
+
+#fileList {
+    border: 1px solid #10000000;
+    border-radius: 10px;
+}
+
+#titleLabel {
+    font: 26px 'Segoe UI SemiBold', 'Microsoft YaHei SemiBold';
+    background-color: transparent;
+    color: white;
+    padding-left: 2px;
+}
+#cachedLabel {
+    font: 15px 'Segoe UI SemiBold', 'Microsoft YaHei SemiBold';
+    background-color: transparent;
+    color: green;
+    padding-left: 2px;
+}

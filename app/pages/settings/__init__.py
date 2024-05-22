@@ -59,7 +59,7 @@ class SettingInterface(ScrollArea):
             cfg.themeMode,
             FIF.BRUSH,
             self.tr('Application theme'),
-            self.tr("Change the appearance of your application"),
+            self.tr("Change the appearance of interface"),
             texts=[
                 self.tr('Light'), self.tr('Dark'),
                 self.tr('Use system setting')
@@ -70,7 +70,7 @@ class SettingInterface(ScrollArea):
             cfg.themeColor,
             FIF.PALETTE,
             self.tr('Theme color'),
-            self.tr('Change the theme color of you application'),
+            self.tr('Change the theme color of interface'),
             self.InterfaceGroup
         )
         self.zoomCard = OptionsSettingCard(

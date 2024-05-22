@@ -1,6 +1,6 @@
 # coding:utf-8
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QPainter, QPainterPath, QImage
+from PyQt5.QtGui import QPainter, QPainterPath, QImage, QColor
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QGraphicsDropShadowEffect
 
 from qfluentwidgets import ScrollArea, FluentIcon
@@ -8,21 +8,18 @@ from qfluentwidgets import ScrollArea, FluentIcon
 from app.module.config import VERSION
 from app.module.stylesheet import StyleSheet
 from app.components.linkcard import LinkCardView
-from app.components.card.samplecardview1 import SampleCardView1
-# from tasks.base.tasks import start_task
-
-# from module.config import cfg
+from app.components.ButtonCardView import CardList
 
 from PIL import Image
-import numpy as np
 
 from app.module.signal_bus import signalBus
 
 
 class BannerWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, window=None):
         super().__init__(parent=parent)
 
+        self.window = window
         self.parent_ = parent
 
         self.vBoxLayout = QVBoxLayout(self)
@@ -34,7 +31,7 @@ class BannerWidget(QWidget):
         # 创建阴影效果
         shadow = QGraphicsDropShadowEffect()
         shadow.setBlurRadius(16)  # 阴影模糊半径
-        shadow.setColor(Qt.black)  # 阴影颜色
+        shadow.setColor(QColor(0, 0, 0, 150))  # 阴影颜色
         shadow.setOffset(0.5, 1)  # 阴影偏移量
 
         # 将阴影效果应用于小部件
@@ -43,7 +40,7 @@ class BannerWidget(QWidget):
         # 创建阴影效果
         shadow2 = QGraphicsDropShadowEffect()
         shadow2.setBlurRadius(16)  # 阴影模糊半径
-        shadow2.setColor(Qt.black)  # 阴影颜色
+        shadow.setColor(QColor(0, 0, 0, 150))  # 阴影颜色
         shadow2.setOffset(0.5, 1)  # 阴影偏移量
 
         # 将阴影效果应用于小部件
@@ -52,7 +49,8 @@ class BannerWidget(QWidget):
         self.img = Image.open("./resources/images/home_bg.jpg")
         self.banner = None
         self.path = None
-        self.lastSize = (0, 0)
+        self.lastWindowSize = QSize(0, 0)
+        self.lastSize = QSize(0, 0)
 
         self.linkCardView = LinkCardView(self)
 
@@ -87,6 +85,7 @@ class BannerWidget(QWidget):
         signalBus.windowResized.connect(self.repaint)
 
     def repaint(self):
+        self.lastWindowSize = QSize(0, 0)
         self.lastSize = QSize(0, 0)
 
     def paintEvent(self, e):
@@ -94,9 +93,10 @@ class BannerWidget(QWidget):
         painter = QPainter(self)
         painter.setRenderHints(QPainter.SmoothPixmapTransform | QPainter.Antialiasing)
 
-        if self.lastSize != self.size():
+        if self.lastWindowSize != self.window.size() or self.lastSize != self.size():
+            self.lastWindowSize = self.window.size()
             self.lastSize = self.size()
-            max_height = int(self.parent_.height() - 300)
+            max_height = int(self.parent_.height() - 250)
             real_height = self.width() * self.img.height // self.img.width
             img = self.img
             if real_height > max_height:
@@ -104,11 +104,12 @@ class BannerWidget(QWidget):
                 crop_area = (0, 0, self.img.width, image_height)  # (left, upper, right, lower)
                 img = self.img.crop(crop_area)
 
-            img_data = np.array(img)  # Convert PIL Image to numpy array
+            img_data = img.tobytes()  # Convert PIL Image to numpy array
 
-            height, width, channels = img_data.shape
+            width, height = img.size
+            channels = 3
             bytes_per_line = channels * width
-            self.banner = QImage(img_data.data, width, height, bytes_per_line, QImage.Format_RGB888)
+            self.banner = QImage(img_data, width, height, bytes_per_line, QImage.Format_RGB888)
 
             real_height = min(real_height, max_height)
             self.setFixedHeight(real_height)
@@ -126,7 +127,7 @@ class HomeInterface(ScrollArea):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.banner = BannerWidget(self)
+        self.banner = BannerWidget(self, parent)
         self.view = QWidget(self)
         self.vBoxLayout = QVBoxLayout(self.view)
 
@@ -149,60 +150,20 @@ class HomeInterface(ScrollArea):
         self.vBoxLayout.setAlignment(Qt.AlignTop)
 
     def loadSamples(self):
-        basicInputView = SampleCardView1(
+        basicInputView = CardList(
             self.tr(" 功能"), self.view)
 
-        basicInputView.addSampleCard(
-            icon="./resources/images/sound_ic.png",
-            title="音频提取",
-            action=lambda: self.win.Switch(1)
-        )
-        basicInputView.addSampleCard(
-            icon="./resources/images/sound_ic.png",
-            title="过场CG",
-            action=lambda: self.win.Switch(2)
-        )
-        basicInputView.addSampleCard(
-            icon="./resources/images/sound_ic.png",
-            title="工具箱",
-            action=lambda: self.win.Switch(3)
-        )
-        basicInputView.addSampleCard(
-            icon="./resources/images/sound_ic.png",
-            title="文档",
-            action=lambda: self.win.Switch(4)
-        )
-        # basicInputView.addSampleCard(
-        #     icon="./resources/images/SilverWolf.jpg",
-        #     title="锄大地",
-        #     action={
-        #         "快速启动 ⭐": lambda: start_task("fight"),
-        #         "原版运行": lambda: start_task("fight_gui"),
-        #         "更新锄大地": lambda: start_task("fight_update"),
-        #         "重置配置文件": lambda: os.remove(os.path.join(cfg.fight_path, "config.json")),
-        #         "打开程序目录": lambda: os.startfile(cfg.fight_path),
-        #         "打开项目主页": lambda: os.startfile("https://github.com/linruowuyin/Fhoe-Rail"),
-        #     }
-        # )
-        # basicInputView.addSampleCard(
-        #     icon="./resources/images/Herta.jpg",
-        #     title="模拟宇宙",
-        #     action={
-        #         "快速启动 ⭐": lambda: start_task("universe"),
-        #         "原版运行": lambda: start_task("universe_gui"),
-        #         "更新模拟宇宙": lambda: start_task("universe_update"),
-        #         "重置配置文件": lambda: os.remove(os.path.join(cfg.universe_path, "info.yml")),
-        #         "打开程序目录": lambda: os.startfile(cfg.universe_path),
-        #         "打开项目主页": lambda: os.startfile("https://github.com/CHNZYX/Auto_Simulated_Universe"),
-        #     }
-        # )
-        # basicInputView.addSampleCard(
-        #     icon="./resources/images/Bronya.jpg",
-        #     title="逐光捡金",
-        #     action={
-        #         "混沌回忆": lambda: start_task("forgottenhall"),
-        #         "虚构叙事": lambda: start_task("purefiction"),
-        #     }
-        # )
+        basicInputView.addCard(icon=FluentIcon.MUSIC_FOLDER.icon(), title=self.tr("Audio Browser"),
+                               content=self.tr("Parse .pck bank files; browse and extract audio clips"),
+                               action=lambda: self.win.Switch(1))
+        basicInputView.addCard(icon=FluentIcon.VIDEO.icon(), title=self.tr("Cutscene Browser"),
+                               content=self.tr("Parse .usm cutscene files; preview and extract videos"),
+                               action=lambda: self.win.Switch(2))
+        basicInputView.addCard(icon=FluentIcon.DEVELOPER_TOOLS.icon(), title=self.tr("Toolbox"),
+                               content=self.tr("Additional utilities"),
+                               action=lambda: self.win.Switch(3))
+        basicInputView.addCard(icon=FluentIcon.LIBRARY.icon(), title=self.tr("Help"),
+                               content=self.tr("Read usage documentations"),
+                               action=lambda: self.win.Switch(4))
 
         self.vBoxLayout.addWidget(basicInputView)

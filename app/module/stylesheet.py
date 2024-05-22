@@ -12,6 +12,7 @@ class StyleSheet(StyleSheetBase, Enum):
     HOME_INTERFACE = "home_interface"
     AUDIO_INTERFACE = "audio_interface"
     VIEW_INTERFACE = "view_interface"
+    SETTING_INTERFACE = "setting_interface"
     FRAME = "frame"
     TAB = "tab"
 

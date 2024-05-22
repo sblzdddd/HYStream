@@ -4,6 +4,7 @@ from qfluentwidgets import MSFluentWindow, NavigationItemPosition
 from qfluentwidgets import FluentIcon as FIF
 from .pages.home import HomeInterface
 from .pages.audio_extract import AudioInterface
+from .pages.settings import SettingInterface
 
 
 class Navigation:
@@ -19,7 +20,7 @@ class Navigation:
 
 
 class Widget(QFrame):
-    def __init__(self, text: str, parent=None):
+    def __init__(self, text, parent=None):
         super().__init__(parent=parent)
         self.label = QLabel(text, self)
         self.label.setAlignment(Qt.AlignCenter)
@@ -30,10 +31,10 @@ class Widget(QFrame):
 
 def navigations(window):
     return [
-        Navigation('主页', FIF.HOME, HomeInterface(window)),
-        Navigation('音频提取', FIF.ALBUM, AudioInterface(window)),
-        Navigation('过场CG', FIF.CAMERA, Widget("Cutscene Interface", window)),
-        Navigation('工具箱', FIF.DEVELOPER_TOOLS, Widget("Tool Interface", window)),
-        Navigation('帮助', FIF.BOOK_SHELF, Widget("Help Interface", window)),
-        Navigation('设置', FIF.SETTING, Widget("Settings Interface", window), isBottom=True),
+        Navigation(window.tr('Home'), FIF.HOME, HomeInterface(window)),
+        Navigation(window.tr('Audio'), FIF.ALBUM, AudioInterface(window)),
+        Navigation(window.tr('Cutscene'), FIF.CAMERA, Widget("Cutscene Interface", window)),
+        Navigation(window.tr('Tools'), FIF.DEVELOPER_TOOLS, Widget("Tool Interface", window)),
+        Navigation(window.tr('Help'), FIF.BOOK_SHELF, Widget("Help Interface", window)),
+        Navigation(window.tr('Settings'), FIF.SETTING, SettingInterface(window), isBottom=True),
     ]

@@ -1,6 +1,8 @@
 import re
 import subprocess
 import os
+
+from app.module.config import cfg
 from app.module.data_manager import AudioFileData, AudioMapData
 from app.module.audio_extract.pck_lib import pck_lib
 from app.module import format_integer
@@ -45,8 +47,9 @@ def parse_waves(in_file: str, logger=None):
 
 
 def extract_raw(data: AudioFileData):
-    if not os.path.exists("cached/"):
-        os.makedirs("cached/", exist_ok=True)
+    cache_folder = cfg.get(cfg.cacheFolder)
+    if not os.path.exists(cache_folder):
+        os.makedirs(cache_folder, exist_ok=True)
     cached_path = data.get_cached_path(True)
     if not os.path.exists(cached_path):
         with open(data.source, "rb") as f:

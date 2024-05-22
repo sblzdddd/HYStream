@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QGraphics
 
 from qfluentwidgets import ScrollArea, FluentIcon
 
+from app.module.config import VERSION
 from app.module.stylesheet import StyleSheet
 from app.components.linkcard import LinkCardView
 from app.components.card.samplecardview1 import SampleCardView1
@@ -15,7 +16,7 @@ from app.components.card.samplecardview1 import SampleCardView1
 from PIL import Image
 import numpy as np
 
-from app.module.GlobalObject import GlobalObject
+from app.module.signal_bus import signalBus
 
 
 class BannerWidget(QWidget):
@@ -27,7 +28,7 @@ class BannerWidget(QWidget):
         self.vBoxLayout = QVBoxLayout(self)
         self.galleryLabel = QLabel(f'HYStream', self)
         self.galleryLabel.setStyleSheet("color: black;font-size: 40px; font-weight:800;")
-        self.introLabel = QLabel(f'Version 1.0', self)
+        self.introLabel = QLabel(f'Version ' + VERSION, self)
         self.introLabel.setStyleSheet("color: black;font-size: 20px; font-weight:600;")
 
         # 创建阴影效果
@@ -69,11 +70,11 @@ class BannerWidget(QWidget):
         linkCardLayout.setAlignment(Qt.AlignBottom)
 
         self.vBoxLayout.setSpacing(0)
-        self.vBoxLayout.setContentsMargins(0, 20, 0, 0)
+        self.vBoxLayout.setContentsMargins(0, 20, 0, 20)
         self.vBoxLayout.addWidget(self.galleryLabel)
         self.vBoxLayout.addWidget(self.introLabel)
-        # self.vBoxLayout.addWidget(self.linkCardView, 1, Qt.AlignBottom)
-        self.vBoxLayout.addLayout(linkCardLayout)
+        self.vBoxLayout.addWidget(self.linkCardView, 1, Qt.AlignBottom)
+        # self.vBoxLayout.addLayout(linkCardLayout)
         self.vBoxLayout.setAlignment(Qt.AlignLeft | Qt.AlignTop)
 
         self.linkCardView.addCard(
@@ -83,9 +84,7 @@ class BannerWidget(QWidget):
             "https://github.com/sblzdddd/HYStream",
         )
 
-        self.globalObj = GlobalObject()
-        self.globalObj.addEventListener("Maximized", self.repaint)
-        self.globalObj.addEventListener("Minimized", self.repaint)
+        signalBus.windowResized.connect(self.repaint)
 
     def repaint(self):
         self.lastSize = QSize(0, 0)

@@ -1,11 +1,13 @@
 import os
 from app.module import md5_hash
 from typing import Tuple, List
+
+from app.module.config import cfg
 from app.module.data_manager.DataManagerBase import DataManagerBase
 
-CACHE_PATH = "./cached/"
-if not os.path.exists("cached/"):
-    os.makedirs("cached/", exist_ok=True)
+CACHE_PATH = cfg.get(cfg.cacheFolder)
+if not os.path.exists(CACHE_PATH):
+    os.makedirs(CACHE_PATH, exist_ok=True)
 
 
 class AudioFileData:
@@ -57,7 +59,7 @@ class AudioMapData:
         return obj
 
 
-AUDIO_DATA_PATH = "cached/audio_data.json"
+AUDIO_DATA_PATH = os.path.join(cfg.get(cfg.dataFolder), "audio_data.json")
 
 
 class AudioFileDataManager(DataManagerBase):
@@ -74,6 +76,7 @@ class AudioFileDataManager(DataManagerBase):
             files = [AudioFileData.from_dict(file) for file in i["files"] if string in file["alias"]]
             if files:
                 result += files
+            print(files)
         return result
 
     def getLength(self):

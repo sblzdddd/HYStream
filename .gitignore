@@ -164,3 +164,4 @@ test.py
 !app/module/audio_extract/pck_lib/*.pyd
 audio_data.json
 cached/
+data/

@@ -4,7 +4,8 @@ from PyQt5.QtWidgets import QApplication, QFrame, QLabel, QHBoxLayout
 
 from contextlib import redirect_stdout
 
-from app.module.GlobalObject import GlobalObject
+from app.module.signal_bus import signalBus
+from app.module.config import cfg, VERSION
 
 with redirect_stdout(None):
     from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, setThemeColor, \
@@ -31,27 +32,23 @@ class MainWindow(MSFluentWindow):
 
     def initWindow(self):
 
-        setThemeColor('#8b9aee', lazy=True)
-        setTheme(Theme.DARK, lazy=True)
+        setThemeColor(cfg.get(cfg.themeColor), lazy=True)
+        # setTheme(Theme.DARK, lazy=True)
         self.setMicaEffectEnabled(False)
+        self.setMicaEffectEnabled(cfg.get(cfg.micaEnabled))
+
+        signalBus.micaEnableChanged.connect(self.setMicaEffectEnabled)
 
         # 创建启动画面
         self.splashScreen = SplashScreen(QIcon('./resources/images/favicon.ico'), self)
         self.splashScreen.setIconSize(QSize(150, 150))
         self.splashScreen.raise_()
 
-        # 禁用最大化
-        # self.titleBar.maxBtn.setHidden(True)
-        # self.titleBar.maxBtn.setDisabled(True)
-        # self.titleBar.setDoubleClickEnabled(False)
-        # self.setResizeEnabled(False)
-        # self.setWindowFlags(Qt.WindowMinimizeButtonHint | Qt.WindowCloseButtonHint)
-
         self.resize(1080, 700)
         self.setMicaEffectEnabled(True)
         self.setMinimumSize(900, 640)
         self.setWindowIcon(QIcon('./resources/images/window_icon.png'))
-        self.setWindowTitle("HYStream")
+        self.setWindowTitle("HYStream " + VERSION)
 
 
         desktop = QApplication.desktop().availableGeometry()
@@ -68,12 +65,6 @@ class MainWindow(MSFluentWindow):
         for n in self.navigations:
             n.register(self)
 
-        self.navigationInterface.addWidget(
-            'themeButton',
-            NavigationBarPushButton(FIF.CONSTRACT, '主题', isSelectable=False),
-            lambda: toggleTheme(lazy=True),
-            NavigationItemPosition.BOTTOM)
-
         self.Switch(1)
         self.splashScreen.finish()
 
@@ -84,7 +75,7 @@ class MainWindow(MSFluentWindow):
         if event.type() == QEvent.WindowStateChange:
             if event.oldState() and Qt.WindowMinimized:
                 print("WindowMinimized")
-                GlobalObject().dispatchEvent("Minimized")
+                signalBus.windowResized.emit("Minimized")
             elif event.oldState() == Qt.WindowNoState or self.windowState() == Qt.WindowMaximized:
                 print("WindowMaximized")
-                GlobalObject().dispatchEvent("Maximized")
+                signalBus.windowResized.emit("Maximized")

@@ -1,12 +1,12 @@
 from enum import Enum
 
 from PyQt5.QtCore import Qt, QModelIndex, QVariant
-from PyQt5.QtGui import QColor, QPainter
+from PyQt5.QtGui import QColor, QPainter, QCursor
 
 from app.components.view.AssetItemDelegate import AssetItemDelegate
 from app.components.view.AssetsTable import AssetsTable, disableEdit, SizeItem
 from PyQt5.QtWidgets import QHeaderView as QH, QTableWidgetItem, QStyleOptionViewItem
-from qfluentwidgets import FluentIcon as FIF, TableItemDelegate, isDarkTheme, themeColor
+from qfluentwidgets import FluentIcon as FIF, TableItemDelegate, isDarkTheme, themeColor, RoundMenu, Action
 
 from app.module import format_bytes, format_duration
 
@@ -113,5 +113,31 @@ class AudioTable(AssetsTable):
             self.setAliasCallback(index, name)
 
     def table_reset(self):
+        self.state: ATState = ATState.IDLE
+        self.currentPlaying = None
         self.clearSelection()
         self.setRowCount(0)
+
+    def generateMenu(self):
+        if len(self.selectedRows()) == 0:
+            return
+        cursor = QCursor()
+        pos = cursor.pos()
+        print("Right Click on", pos)
+
+        contextMenu = RoundMenu("Actions", self)
+
+        # Add actions in batches
+        contextMenu.addActions([
+            Action(FIF.SAVE_AS, 'Export Selected', triggered=lambda: print(self.selectedRows())),
+        ])
+
+        # Add a separator
+        contextMenu.addSeparator()
+
+        contextMenu.addActions([
+            Action(FIF.CHECKBOX, 'Select All', shortcut='Ctrl+A', triggered=lambda: self.selectAll()),
+            Action(FIF.REMOVE_FROM, 'Select None', shortcut='Ctrl+N',
+                   triggered=lambda: self.clearSelection())
+        ])
+        contextMenu.exec_(pos)

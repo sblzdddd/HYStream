@@ -47,7 +47,7 @@ class AudioInterface(ScrollArea):
     def __initWidget(self):
         self.view.setObjectName('view')
         self.setObjectName('audioInterface')
-        StyleSheet.AUDIO_INTERFACE.apply(self)
+        StyleSheet.GENERAL_INTERFACE.apply(self)
 
         self.vBoxLayout = QVBoxLayout(self.view)
         self.vBoxLayout.setContentsMargins(30, 30, 30, 30)

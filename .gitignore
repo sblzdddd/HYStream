@@ -162,6 +162,10 @@ cython_debug/
 resources/artifacts/*
 test.py
 !app/module/audio_extract/pck_lib/*.pyd
+config.json
 audio_data.json
 cached/
 data/
+*.pck
+*.usm
+*.bytes

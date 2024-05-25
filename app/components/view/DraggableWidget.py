@@ -42,10 +42,10 @@ class DraggableWidget(TableWidget):
         if self.dragging and self.startPos and self.endPos:
             painter = QPainter(self.viewport())
             theme = themeColor()
-            colorFill = QColor(theme.red(), theme.green(), theme.blue(), 100)
-            colorStroke = QColor(theme.red(), theme.green(), theme.blue(), 200)
+            colorFill = QColor(theme.red(), theme.green(), theme.blue(), 50)
+            colorStroke = QColor(theme.red(), theme.green(), theme.blue(), 150)
             stroke = QPen(colorStroke)
-            stroke.setWidth(2)
+            stroke.setWidth(1)
             painter.setPen(stroke)
             painter.setBrush(QBrush(colorFill))
             startPos = QPoint(self.startPos.x(), self.startPos.y())

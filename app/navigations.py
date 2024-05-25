@@ -5,6 +5,7 @@ from qfluentwidgets import FluentIcon as FIF
 from .pages.home import HomeInterface
 from .pages.audio_extract import AudioInterface
 from .pages.settings import SettingInterface
+from .pages.cutscene_extract import CutsceneInterface
 
 
 class Navigation:
@@ -33,7 +34,7 @@ def navigations(window):
     return [
         Navigation(window.tr('Home'), FIF.HOME, HomeInterface(window)),
         Navigation(window.tr('Audio'), FIF.ALBUM, AudioInterface(window)),
-        Navigation(window.tr('Cutscene'), FIF.CAMERA, Widget("Cutscene Interface", window)),
+        Navigation(window.tr('Cutscene'), FIF.CAMERA, CutsceneInterface(window)),
         Navigation(window.tr('Tools'), FIF.DEVELOPER_TOOLS, Widget("Tool Interface", window)),
         Navigation(window.tr('Help'), FIF.BOOK_SHELF, Widget("Help Interface", window)),
         Navigation(window.tr('Settings'), FIF.SETTING, SettingInterface(window), isBottom=True),

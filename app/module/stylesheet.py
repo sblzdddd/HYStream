@@ -10,7 +10,7 @@ class StyleSheet(StyleSheetBase, Enum):
     LINK_CARD = "link_card"
     SAMPLE_CARD = "sample_card"
     HOME_INTERFACE = "home_interface"
-    AUDIO_INTERFACE = "audio_interface"
+    GENERAL_INTERFACE = "general_interface"
     VIEW_INTERFACE = "view_interface"
     SETTING_INTERFACE = "setting_interface"
     FRAME = "frame"

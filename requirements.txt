@@ -4,3 +4,4 @@ tinydb~=4.8.0
 Cython~=3.0.10
 cx_Freeze~=7.0.0
 PyQt-Fluent-Widgets
+Cython

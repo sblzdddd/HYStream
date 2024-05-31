@@ -1,4 +1,5 @@
 import hashlib
+import os
 
 
 def format_bytes(size):
@@ -9,6 +10,17 @@ def format_bytes(size):
         size /= 1024.0
         unit_index += 1
     return '{:.2f}{}'.format(size, units[unit_index])
+
+
+def scan_files(folder, extension, sort_method=None):
+    file_list = []
+    for root, dirs, files in os.walk(folder):
+        for file in files:
+            if file.endswith("." + extension):
+                file_list.append(os.path.abspath(os.path.join(root, file)))
+    if sort_method is not None:
+        file_list = sorted(file_list, key=sort_method)
+    return file_list
 
 
 def clear_layout(layout):

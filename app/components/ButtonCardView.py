@@ -63,9 +63,9 @@ class ButtonCard(CardWidget):
 class CardList(QWidget):
     """ Sample card view """
 
-    def __init__(self, title: str, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.titleLabel = QLabel(title, self)
+        # self.titleLabel = QLabel(title, self)
         self.vBoxLayout = QVBoxLayout(self)
         self.hBoxLayouts = []
         self.count = 0
@@ -73,9 +73,9 @@ class CardList(QWidget):
         self.vBoxLayout.setContentsMargins(20, 0, 20, 20)
         self.vBoxLayout.setSpacing(10)
 
-        self.vBoxLayout.addWidget(self.titleLabel)
+        # self.vBoxLayout.addWidget(self.titleLabel)
 
-        self.titleLabel.setObjectName('viewTitleLabel')
+        # self.titleLabel.setObjectName('viewTitleLabel')
         StyleSheet.SAMPLE_CARD.apply(self)
 
     def addCard(self, icon, title, content, action):

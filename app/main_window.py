@@ -14,7 +14,7 @@ with redirect_stdout(None):
 
 from app.navigations import navigations
 
-import base64
+import time
 
 
 class MainWindow(MSFluentWindow):
@@ -65,7 +65,7 @@ class MainWindow(MSFluentWindow):
         for n in self.navigations:
             n.register(self)
 
-        self.Switch(1)
+        time.sleep(0.2)
         self.splashScreen.finish()
 
     def Switch(self, index):

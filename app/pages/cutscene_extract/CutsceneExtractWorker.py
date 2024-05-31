@@ -4,7 +4,7 @@ from typing import List
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
-from app.module import file_md5
+from app.module import file_md5, scan_files
 from app.module.audio_extract import AudioExtractor as ae
 from app.module.data_manager import AudioFileDataManager, AudioFileData, AudioMapData
 
@@ -21,7 +21,7 @@ class CEWorker(QObject):
         self.fileDataManager = AudioFileDataManager()
 
     def scan_files(self, folder):
-        files = ae.scan_banks(folder)
+        files = scan_files(folder, "usm")
         return files
 
     def do_import_job(self, lock, files):

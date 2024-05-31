@@ -96,7 +96,7 @@ class BannerWidget(QWidget):
         if self.lastWindowSize != self.window.size() or self.lastSize != self.size():
             self.lastWindowSize = self.window.size()
             self.lastSize = self.size()
-            max_height = int(self.parent_.height() - 250)
+            max_height = int(self.parent_.height() - 220)
             real_height = self.width() * self.img.height // self.img.width
             img = self.img
             if real_height > max_height:
@@ -150,8 +150,7 @@ class HomeInterface(ScrollArea):
         self.vBoxLayout.setAlignment(Qt.AlignTop)
 
     def loadSamples(self):
-        basicInputView = CardList(
-            self.tr(" 功能"), self.view)
+        basicInputView = CardList(self.view)
 
         basicInputView.addCard(icon=FluentIcon.MUSIC_FOLDER.icon(), title=self.tr("Audio Browser"),
                                content=self.tr("Parse .pck bank files; browse and extract audio clips"),

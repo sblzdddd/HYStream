@@ -16,7 +16,7 @@ class ATState(Enum):
 
 
 class AudioTable(AssetsTable):
-    def __init__(self, parent, playAudio, setAlias):
+    def __init__(self, parent, playAudio, setAlias, export):
         super().__init__(parent)
         self.delegate = AssetItemDelegate(self)
         self.setItemDelegate(self.delegate)
@@ -28,6 +28,7 @@ class AudioTable(AssetsTable):
         self.cellChanged.connect(self.audioCellChanged)
         self.state: ATState = ATState.IDLE
         self.playAudioCallback = playAudio
+        self.exportCallback = export
         self.setAliasCallback = setAlias
         self.currentPlaying = None
 
@@ -118,6 +119,14 @@ class AudioTable(AssetsTable):
         self.clearSelection()
         self.setRowCount(0)
 
+    def export_selected(self):
+        print(self.selectedRows())
+        i = []
+        for row in self.selectedRows():
+            i.append(self.getRealIndexByName(self.item(row, 0).text()))
+        print(i)
+        self.exportCallback(i)
+
     def generateMenu(self):
         if len(self.selectedRows()) == 0:
             return
@@ -129,7 +138,7 @@ class AudioTable(AssetsTable):
 
         # Add actions in batches
         contextMenu.addActions([
-            Action(FIF.SAVE_AS, 'Export Selected', triggered=lambda: print(self.selectedRows())),
+            Action(FIF.SAVE_AS, 'Export Selected', triggered=self.export_selected),
         ])
 
         # Add a separator

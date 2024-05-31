@@ -56,7 +56,7 @@ class Config(QConfig):
 
 YEAR = 2024
 AUTHOR = "sblzdddd"
-VERSION = "0.5.3"
+VERSION = "0.5.4 Beta"
 REPO_URL = "https://github.com/sblzdddd/HYSR"
 FEEDBACK_URL = f"{REPO_URL}/issues"
 RELEASE_URL = f"{REPO_URL}/releases/latest"

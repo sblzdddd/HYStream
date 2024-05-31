@@ -34,11 +34,14 @@ class SearchTab(ScrollArea):
         self.searchTimer.timeout.connect(self.search)
 
         # === Audio Table ===
-        self.audioTable = AudioTable(self.parent(), self.PlayAudio, self.setAlias)
+        self.audioTable = AudioTable(self.parent(), self.PlayAudio, self.setAlias, self.export)
 
         self.vBoxLayout.addWidget(self.fileSearch)
         self.vBoxLayout.addWidget(self.audioTable, stretch=1)
         self.vBoxLayout.setContentsMargins(0, 0, 0, 0)
+
+    def export(self, index_list):
+        pass
 
     def start_search_timeout(self):
         print(1)

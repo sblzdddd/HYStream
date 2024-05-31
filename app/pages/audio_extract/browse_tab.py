@@ -40,7 +40,7 @@ class BrowseTab(ScrollArea):
         self.hBoxLayout.addWidget(self.fileList)
 
         # === Audio Table ===
-        self.audioTable = AudioTable(self.parent(), self.PlayAudio, self.setAlias)
+        self.audioTable = AudioTable(self.parent(), self.PlayAudio, self.setAlias, self.export)
         self.hBoxLayout.addWidget(self.audioTable, stretch=1)
 
     def GenerateFileList(self, files, length):
@@ -77,6 +77,9 @@ class BrowseTab(ScrollArea):
             position=InfoBarPosition.BOTTOM_RIGHT,
             duration=1000,
         )
+
+    def export(self, index_list):
+        self.parent_.start_export_thread(self.currentMap, index_list)
 
     def reset(self):
         self.fileList.reset()

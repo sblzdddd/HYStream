@@ -1,12 +1,14 @@
 import os
 import time
 from typing import List
+import shutil
 
 from PyQt5.QtCore import QObject, pyqtSignal
 
 from app.module import file_md5
 from app.module.audio_extract import AudioExtractor as ae
 from app.module.data_manager import AudioFileDataManager, AudioFileData, AudioMapData
+from app.module import scan_files
 
 
 class AEWorker(QObject):
@@ -21,7 +23,7 @@ class AEWorker(QObject):
         self.fileDataManager = AudioFileDataManager()
 
     def scan_files(self, folder):
-        files = ae.scan_banks(folder)
+        files = scan_files(folder, "pck", sort_method=ae.banks_sort)
         return files
 
     def do_import_job(self, lock, files):
@@ -70,6 +72,18 @@ class AEWorker(QObject):
                 self.onDurationChanged.emit(file.get_file_name(), duration)
                 self.fileDataManager.db.storage.flush()
         return out
+
+    def do_export_job(self, lock, data: AudioMapData, index: list, folder: str):
+        with lock:
+            completed = 0
+            for i in index:
+                file_name = data.files[i].get_file_name()
+                self.onSetTitle.emit(f"Exporting {file_name}...")
+                out = self.extract(data, i)
+                shutil.copy2(out, os.path.join(folder, file_name))
+                completed += 1
+                self.oneFinished.emit(completed)
+            self.allFinished.emit([completed])
 
     def set_alias(self, data: AudioMapData, index: int, alias: str):
         data.files[index].alias = alias

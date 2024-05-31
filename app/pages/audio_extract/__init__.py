@@ -136,10 +136,41 @@ class AudioInterface(ScrollArea):
 
         self.loadingDiag.show()
 
+    def start_export_thread(self, data, files):
+        targetFolder = self.fd.openFolderDialog()
+        if targetFolder is None: return
+        self.loadingDiag = LoadingDialog(self.win)
+        self.loadingDiag.setTotalValue(len(files))
+        self.loadingDiag.log(f"Exporting {len(files)} audio files")
+        self.worker.oneFinished.connect(self.updateFinish)
+        self.worker.allFinished.connect(self.export_finished)
+        self.worker.onLog.connect(self.loadingDiag.log)
+        self.worker.onSetTitle.connect(self.loadingDiag.setTitle)
+
+        lock = threading.Lock()
+        self.export_thread = threading.Thread(target=self.worker.do_export_job, args=[lock, data, files, targetFolder])
+        self.export_thread.start()
+
+        self.loadingDiag.show()
+
+
     def updateFinish(self, value):
         if self.loadingDiag.total > 0:
             self.loadingDiag.updateValue(value)
         # QApplication.processEvents()
+
+    def export_finished(self, length):
+        self.loadingDiag.accept()
+        InfoBar.success(
+            title=f'{length[0]} audio file(s) successfully exported',
+            content=f"",
+            orient=Qt.Horizontal,
+            isClosable=True,
+            position=InfoBarPosition.TOP,
+            duration=1000,
+            parent=self
+        )
+
 
     def import_finished(self, length):
         self.loadingDiag.accept()

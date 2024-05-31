@@ -8,14 +8,6 @@ from app.module.audio_extract.pck_lib import pck_lib
 from app.module import format_integer
 
 
-def scan_banks(folder):
-    file_list = []
-    for root, dirs, files in os.walk(folder):
-        for file in files:
-            if file.endswith(".pck"):
-                file_list.append(os.path.abspath(os.path.join(root, file)))
-    file_list = sorted(file_list, key=banks_sort)
-    return file_list
 
 
 def banks_sort(item):
